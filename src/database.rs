@@ -1,10 +1,13 @@
 
 use mongodb::{Client, options::{ClientOptions, ResolverConfig}, Database};
 use lazy_static::lazy_static;
+use dotenv::dotenv;
+use std::env;
 
 lazy_static! {
     static ref DATABASE: Database = {
-        let client_uri = "mongodb+srv://huunguyen:T254nouuOj78wQLo@cluster0.l1ldu.mongodb.net/?retryWrites=true&w=majority";
+        dotenv().ok();
+        let client_uri = env::var("DATABASE_URL").expect("Please set DATABASE_URL in your environment file.");
         let options = tokio::runtime::Runtime::new().unwrap().block_on(async {
           let options = ClientOptions::parse_with_resolver_config(&client_uri, ResolverConfig::cloudflare()).await;
           options

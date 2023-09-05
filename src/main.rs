@@ -1,7 +1,5 @@
 use std::net::SocketAddr;
 
-
-
 mod app;
 mod database;
 mod utils;
