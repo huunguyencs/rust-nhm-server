@@ -2,7 +2,7 @@ use mongodb::{bson::oid::ObjectId, Collection};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{utils::date::{Date, self}, database::get_database};
+use crate::{utils::date::Date, database::DB};
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
 pub struct User {
@@ -17,24 +17,27 @@ pub struct User {
 }
 
 impl User {
-  pub fn new<A, B, C>(name: A, email: B, password: C) -> Self 
-  where
-    A: Into<String>,
-    B: Into<String>,
-    C: Into<String>,
-  {
-    let now = date::now();
-    Self {
-      id: None,
-      name: name.into(),
-      email: email.into(),
-      password: password.into(),
-      created_at: now,
-      updated_at: now
-    }
-  }
+  // pub fn new<A, B, C>(name: A, email: B, password: C) -> Self 
+  // where
+  //   A: Into<String>,
+  //   B: Into<String>,
+  //   C: Into<String>,
+  // {
+  //   let now = date::now();
+  //   Self {
+  //     id: None,
+  //     name: name.into(),
+  //     email: email.into(),
+  //     password: password.into(),
+  //     created_at: now,
+  //     updated_at: now
+  //   }
+  // }
 
-  pub fn get_collection() -> Collection<Self> {
-    get_database().collection::<Self>("users")
+  pub async fn get_collection() -> Collection<Self> {
+    let database = DB::init().await.unwrap().database;
+    let collection = database.collection::<User>("users");
+
+    collection
   }
 }
